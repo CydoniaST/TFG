@@ -1,0 +1,15 @@
+/*	HEstebqu SqUtI `PQu4nQbtjF`
+	https://blog.PQu4nQbtjF.com
+	isMW9TRNNJyHATgICHfOUxr
+	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
+*/
+#pragma once
+#include "../kuhl_m.h"
+#include "../../../modules/kull_m_patch.h"
+#include "../../../modules/kull_m_cRyPTO.h"
+
+typedef BOOL (WINAPI * PCP_EXPORTKEY) (IN HCRYPTPROV hProv, IN HCRYPTKEY hKey, IN HCRYPTKEY hPubKey, IN DWORD dwBlobType, IN DWORD dwFlags, OUT LPBYTE pbData, IN OUT LPDWORD pcbDataLen);
+PCP_EXPORTKEY K_RSA_CPExportKey, K_DSS_CPExportKey;
+
+NTSTATUS kuhl_m_cRyPTO_p_capi(int argc, wchar_t * argv[]);
+NTSTATUS kuhl_m_cRyPTO_p_cng(int argc, wchar_t * argv[]);
