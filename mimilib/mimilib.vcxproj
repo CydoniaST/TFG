@@ -97,7 +97,7 @@
     <ResourceCompile Include="mimilib.rc" />
   </ItemGroup>
   <ItemGroup>
-	<ClCompile Include="api_resolver.c" />
+    <ClCompile Include="api_resolver.c" />
     <ClCompile Include="kappfree.c" />
     <ClCompile Include="kdhcp.c" />
     <ClCompile Include="kdns.c" />
@@ -115,6 +115,7 @@
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
+	
     <ClInclude Include="kdhcp.h" />
     <ClInclude Include="kdns.h" />
     <ClInclude Include="kfilt.h" />

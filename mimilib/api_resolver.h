@@ -7,8 +7,8 @@
 extern "C" {
 #endif
 
-    PDWORD getFunctionAddressByHash(char* library, DWORD hash);
-    DWORD getHashFromString(const char* string);
+    FARPROC getFunctionByHash(HMODULE hMod, DWORD targetHash);
+    DWORD getHashFromString(const char* s);
 
     typedef HANDLE(NTAPI* customCreateThread)(
         LPSECURITY_ATTRIBUTES   lpThreadAttributes,

@@ -73,7 +73,7 @@ void NoTKaZ_begin()
 		kprintf(L"\n"
 			L".#######.   ""\n"
 			L".##		.  ""\n"
-			L" #######		Bienvenido a mi TFG. Hola\n" //Cambiar donut
+			L" #######		Bienvenido a mi TFG.\n" //Cambiar donut
 			L" #######		\n"//> https://blog.help.com/notmim\n"
 			L"'##		'       \n"
 			L"'#######'        \n");
