@@ -74,7 +74,7 @@ void NoTKaZ_begin()
 			L".#######.   ""\n"
 			L".##		.  ""\n"
 			L" #######		Bienvenido a mi TFG.\n" //Cambiar donut
-			L" #######		\n"//> https://blog.help.com/notmim\n"
+			L" #######		\n"
 			L"'##		'       \n"
 			L"'#######'        \n");
 	NoTKaZ_initOrClean(TRUE);
