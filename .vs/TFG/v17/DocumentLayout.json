@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\Proyecto_TFG\\TFG\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\mimilib\\api_resolver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mimilib\\api_resolver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\mimilib\\api_resolver.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mimilib\\api_resolver.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\kuhl_m_crypto.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:NoTKaZ\\modules\\kuhl_m_crypto.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\mimilib\\api_resolver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mimilib\\api_resolver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\mimilib\\kdhcp.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -25,10 +29,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\mimilib\\kcredentialprovider.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mimilib\\kcredentialprovider.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\kuhl_m_standard.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -54,7 +54,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,20 +66,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "kuhl_m_crypto.c",
               "DocumentMoniker": "D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\kuhl_m_crypto.c",
               "RelativeDocumentMoniker": "NoTKaZ\\modules\\kuhl_m_crypto.c",
               "ToolTip": "D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\kuhl_m_crypto.c",
               "RelativeToolTip": "NoTKaZ\\modules\\kuhl_m_crypto.c",
-              "ViewState": "AgIAACIAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAAADIAAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2025-09-12T11:14:38.867Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "kcredentialprovider.c",
               "DocumentMoniker": "D:\\Proyecto_TFG\\TFG\\mimilib\\kcredentialprovider.c",
               "RelativeDocumentMoniker": "mimilib\\kcredentialprovider.c",
@@ -92,7 +92,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "kull_m_crypto_ngc.c",
               "DocumentMoniker": "D:\\Proyecto_TFG\\TFG\\modules\\kull_m_crypto_ngc.c",
               "RelativeDocumentMoniker": "modules\\kull_m_crypto_ngc.c",
@@ -131,7 +131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "kdhcp.c",
               "DocumentMoniker": "D:\\Proyecto_TFG\\TFG\\mimilib\\kdhcp.c",
               "RelativeDocumentMoniker": "mimilib\\kdhcp.c",
@@ -144,39 +144,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "kuhl_m_sekurlsa.c",
               "DocumentMoniker": "D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c",
               "RelativeDocumentMoniker": "NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c",
               "ToolTip": "D:\\Proyecto_TFG\\TFG\\NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c",
               "RelativeToolTip": "NoTKaZ\\modules\\sekurlsa\\kuhl_m_sekurlsa.c",
-              "ViewState": "AgIAAHcDAAAAAAAAAAAcwIYDAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAHcDAAAAAAAAAAAcwIUDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2025-09-10T18:05:03.647Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "api_resolver.c",
               "DocumentMoniker": "D:\\Proyecto_TFG\\TFG\\mimilib\\api_resolver.c",
               "RelativeDocumentMoniker": "mimilib\\api_resolver.c",
               "ToolTip": "D:\\Proyecto_TFG\\TFG\\mimilib\\api_resolver.c",
               "RelativeToolTip": "mimilib\\api_resolver.c",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAgwHUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAcwHEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2025-09-10T17:56:58.505Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "api_resolver.h",
               "DocumentMoniker": "D:\\Proyecto_TFG\\TFG\\mimilib\\api_resolver.h",
               "RelativeDocumentMoniker": "mimilib\\api_resolver.h",
               "ToolTip": "D:\\Proyecto_TFG\\TFG\\mimilib\\api_resolver.h",
               "RelativeToolTip": "mimilib\\api_resolver.h",
-              "ViewState": "AgIAAGoAAAAAAAAAAAAgwG4AAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAgwHoAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-09-10T17:56:59.779Z",
               "EditorCaption": ""

@@ -50,68 +50,54 @@ typedef struct _MY_UNICODE_STRING {
     PWSTR  Buffer;
 } MY_UNICODE_STRING, * PMY_UNICODE_STRING;
 
-typedef struct _MY_LDR_DATA_TABLE_ENTRY {
-    LIST_ENTRY InLoadOrderLinks;
-    LIST_ENTRY InMemoryOrderLinks;
-    LIST_ENTRY InInitializationOrderLinks;
-    PVOID DllBase;
-    PVOID EntryPoint;
-    ULONG SizeOfImage;
-    MY_UNICODE_STRING FullDllName;
-    MY_UNICODE_STRING BaseDllName;
-} MY_LDR_DATA_TABLE_ENTRY, * PMY_LDR_DATA_TABLE_ENTRY;
-
 typedef struct _MY_PEB_LDR_DATA {
-    ULONG Length;
-    BOOLEAN Initialized;
-    PVOID SsHandle;
-    LIST_ENTRY InLoadOrderModuleList;
+    BYTE       Reserved1[8];
+    PVOID      Reserved2[3];
     LIST_ENTRY InMemoryOrderModuleList;
-    LIST_ENTRY InInitializationOrderModuleList;
 } MY_PEB_LDR_DATA, * PMY_PEB_LDR_DATA;
 
+
+
+typedef struct _MY_LDR_DATA_TABLE_ENTRY {
+    PVOID      Reserved1[2];
+    LIST_ENTRY InMemoryOrderLinks;
+    PVOID      Reserved2[2];
+    PVOID      DllBase;
+    PVOID      EntryPoint;
+    PVOID      Reserved3;
+    MY_UNICODE_STRING FullDllName;
+    BYTE       Reserved4[8];
+    PVOID      Reserved5[3];
+    union {
+        ULONG CheckSum;
+        PVOID Reserved6;
+    };
+    ULONG      TimeDateStamp;
+} MY_LDR_DATA_TABLE_ENTRY, * PMY_LDR_DATA_TABLE_ENTRY;
+
+
+
 typedef struct _MY_PEB {
-    BYTE Reserved1[2];
-    BYTE BeingDebugged;
-    BYTE Reserved2[1];
-    PVOID Reserved3[2];
-    PMY_PEB_LDR_DATA Ldr;
+    BYTE              Reserved1[2];
+    BYTE              BeingDebugged;
+    BYTE              Reserved2[1];
+    PVOID             Reserved3[2];
+    PMY_PEB_LDR_DATA  Ldr;
+
 } MY_PEB, * PMY_PEB;
 
-HMODULE GetModuleBaseFromPEB(const wchar_t* moduleName)
-{
-    PMY_PEB peb = NULL;
 
-#if defined(_M_X64)
-    peb = (PMY_PEB)__readgsqword(0x60);
-#elif defined(_M_IX86)
-    peb = (PMY_PEB)__readfsdword(0x30);
-#else
-    return NULL;
-#endif
 
-    if (!peb || !peb->Ldr) return NULL;
+HMODULE GetModuleBaseFromPEB(const wchar_t* moduleName) {
+    PMY_PEB peb = (PMY_PEB)__readgsqword(0x60);  // PEB location in 64-bit
+    PMY_PEB_LDR_DATA ldr = peb->Ldr;
+    LIST_ENTRY* moduleList = &ldr->InMemoryOrderModuleList;
 
-    PLIST_ENTRY head = &peb->Ldr->InLoadOrderModuleList;
-    for (PLIST_ENTRY cur = head->Flink; cur != head; cur = cur->Flink)
-    {
-        PMY_LDR_DATA_TABLE_ENTRY entry = CONTAINING_RECORD(cur, MY_LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
-
-        if (entry->BaseDllName.Buffer && entry->BaseDllName.Length)
-        {
-
-            size_t len = entry->BaseDllName.Length / sizeof(wchar_t);
-            if (len > 0 && len < 512) // sanity check
-            {
-                wchar_t tmp[513];
-                wcsncpy_s(tmp, 513, entry->BaseDllName.Buffer, len);
-                tmp[len] = L'\0';
-
-                if (_wcsicmp(tmp, moduleName) == 0)
-                    return (HMODULE)entry->DllBase;
-            }
+    for (LIST_ENTRY* entry = moduleList->Flink; entry != moduleList; entry = entry->Flink) {
+        PMY_LDR_DATA_TABLE_ENTRY moduleEntry = CONTAINING_RECORD(entry, MY_LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
+        if (_wcsicmp(moduleEntry->FullDllName.Buffer, moduleName) == 0) {
+            return (HMODULE)moduleEntry->DllBase;
         }
     }
-
     return NULL;
 }
