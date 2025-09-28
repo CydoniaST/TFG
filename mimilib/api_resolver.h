@@ -122,6 +122,7 @@ extern "C" {
 #define H_ncrypt_dll               0x008F1AAB
 #define H_NCryptKeyDerivation      0x00A4E6C1
 #define H_TERMINATIONPROCESS       0x1ABEE5
+#define H_kernel32_dll             0x796887
 
 #ifdef __cplusplus
 }

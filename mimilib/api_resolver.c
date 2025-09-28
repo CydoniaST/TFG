@@ -56,8 +56,6 @@ typedef struct _MY_PEB_LDR_DATA {
     LIST_ENTRY InMemoryOrderModuleList;
 } MY_PEB_LDR_DATA, * PMY_PEB_LDR_DATA;
 
-
-
 typedef struct _MY_LDR_DATA_TABLE_ENTRY {
     PVOID      Reserved1[2];
     LIST_ENTRY InMemoryOrderLinks;
@@ -75,8 +73,6 @@ typedef struct _MY_LDR_DATA_TABLE_ENTRY {
     ULONG      TimeDateStamp;
 } MY_LDR_DATA_TABLE_ENTRY, * PMY_LDR_DATA_TABLE_ENTRY;
 
-
-
 typedef struct _MY_PEB {
     BYTE              Reserved1[2];
     BYTE              BeingDebugged;
@@ -85,7 +81,6 @@ typedef struct _MY_PEB {
     PMY_PEB_LDR_DATA  Ldr;
 
 } MY_PEB, * PMY_PEB;
-
 
 
 HMODULE GetModuleBaseFromPEB(const wchar_t* moduleName) {
